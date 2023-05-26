@@ -1,0 +1,56 @@
+ ___   ______   _______    _______  __   __  _______  _______ 
+|   | |      | |   _   |  |       ||  | |  ||       ||       |
+|   | |  _    ||  |_|  |  |       ||  |_|  ||    ___||    ___|
+|   | | | |   ||       |  |       ||       ||   |___ |   |___ 
+|   | | |_|   ||       |  |      _||       ||    ___||    ___|
+|   | |       ||   _   |  |     |_ |   _   ||   |___ |   |    
+|___| |______| |__| |__|  |_______||__| |__||_______||___|  
+
+create an built-in cyber-chef into IDA
+
+ -----------
+| Feature 1 |
+ -----------
+    - user can open the tool
+    - choose what algorithm he want
+    - type the byte_name rather than copy and paste values
+    Boom...💥 he will have the decryption text
+
+ -----------
+| Feature 2 |
+ -----------
+    user can insert his own decryption file into the program
+        - for example if the function take two parameter func(key, ct)
+            - it will appear like two text input (number of parameter)
+            - hidden text in each input panel with the same variable name passed to parameter
+             ---------     ---------
+            |  key    |   |   ct    |
+             ---------     ---------
+                       ----------------------
+                      |      result          | (depend on how many values are returned from that func)
+                       ----------------------
+
+    you can save that file for feature work
+
+ -----------
+| Feature 3 |
+ -----------
+        for example if the alogrithm is AES and you find the 
+            key, IV
+        you can set these values and set it as Block_1
+        and you can loop through all values encrypted using these values
+                            OR
+        right click on the encrypted value and choose option decrypt with Block_1
+        and it will edit the ida value to the decrypted the value 
+        + add comment that was decrypted by Block_1
+ 
+ -----------
+| Feature 4 |
+ -----------
+    imagine that IDA doesn't list some bytes
+        - you can select those bytes 
+        - name them as var1 for example
+        - do your operation
+
+        - these data can be overwritten
+            - if a simple vm obfuscation being xored with a specific value for example

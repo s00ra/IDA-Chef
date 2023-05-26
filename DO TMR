@@ -1,0 +1,15 @@
+-------------------------------------------------------------------------------------- [21 / 5 / 2023]
+create the plugin menu                                                  [dn]
+-------------------------------------------------------------------------------------- [22 / 5 / 2023]
+add two options
+    - add two ">" in the menu                                           [dn]
+    - if you click on one of them it will open an empty tab             [dn]
+-------------------------------------------------------------------------------------- [23 / 5 / 2023]
+- how to get value from byte_name                                       [dn]
+-------------------------------------------------------------------------------------- [24 / 5 / 2023]
+how to divide your window
+    - make multiple windows on the top of the main windows
+      - if you get it create the three windows
+        - operations
+        - recipes
+        - input/output
