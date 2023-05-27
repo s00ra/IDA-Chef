@@ -21,3 +21,8 @@
 
 - very good example of how to use PyQt5 in idaapi #GUI #idaapi
     - https://gist.github.com/alexander-hanel/8f0cd7b53d5e55f73de97de09a0eec8b
+
+- Drag & drop widgets with PyQt
+    - https://www.pythonguis.com/faq/pyqt-drag-drop-widgets/
+- Creating searchable widget dashboards
+    - https://www.pythonguis.com/tutorials/widget-search-bar/

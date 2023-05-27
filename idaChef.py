@@ -25,10 +25,7 @@ import idaapi
 import idautils
 import ida_kernwin
 
-from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QMessageBox, QVBoxLayout, QMenu, QWidget
-from PyQt5.QtGui import QCursor, QKeySequence
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 # import all crypto functions
     # Note that you can add your own <file.py> into "fun_crypto folder"
@@ -196,8 +193,92 @@ class ida_chef_window(idaapi.PluginForm):
     # Called when the widget is created
     def OnCreate(self, form):
         # Get parent widget
-        self.parent = self.FormToPyQtWidget(form)
-        self.PopulateForm()
+        self.parnet = self.FormToPyQtWidget(form)
+        self.inject_ui_main_window()
+
+    def inject_ui_main_window(self):
+        _translate = QtCore.QCoreApplication.translate
+        
+        self.verticalLayout = QtWidgets.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+
+        self.main_layout = QtWidgets.QHBoxLayout()
+        self.main_layout.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
+        self.main_layout.setContentsMargins(0, -1, 0, -1)
+        self.main_layout.setObjectName("main_layout")
+
+        self.operations = QtWidgets.QScrollArea()
+        self.operations.setEnabled(True)
+        self.operations.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.operations.setAutoFillBackground(False)
+        self.operations.setWidgetResizable(True)
+        self.operations.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.operations.setObjectName("operations")
+
+        self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 341, 804))
+        self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
+        
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_2)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        
+        # define btns
+        for i, l in enumerate(list("a"*50)):
+            self.btn = QtWidgets.QPushButton(self.scrollAreaWidgetContents_2)
+
+            self.btn.setFlat(True)
+            self.btn.setStyleSheet(
+                "QPushButton"
+                "{"
+                    "color: #002B5B;"
+                    "background-color: #cce4ff;"
+                    "padding-left: auto;"
+                    "padding-right: 200px;"
+                    "padding-top: 20px;"
+                    "padding-bottom: 30px;"
+                    "border: 2px solid #cce4ff;"
+                    "border-radius: 1px;"
+                    "font-size: 25px;"
+                    "font-weight: bold;"
+                "}"
+            )
+
+            self.btn.setObjectName(l)
+            self.btn.setText(_translate("main_window", "btn_" + str(i)))
+            
+            self.verticalLayout_2.addWidget(self.btn)
+        
+        self.operations.setWidget(self.scrollAreaWidgetContents_2)
+        self.main_layout.addWidget(self.operations)
+        
+        self.recipe = QtWidgets.QScrollArea()
+        self.recipe.setWidgetResizable(True)
+        self.recipe.setObjectName("recipe")
+        
+        self.scrollAreaWidgetContents = QtWidgets.QWidget()
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 359, 752))
+        self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
+        
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayout_3.setContentsMargins(0, 0, -1, -1)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        
+        self.recipe.setWidget(self.scrollAreaWidgetContents)
+        self.main_layout.addWidget(self.recipe)
+
+        self.input_output = QtWidgets.QVBoxLayout()
+        self.input_output.setContentsMargins(0, -1, 0, -1)
+        self.input_output.setObjectName("input_output")
+        self.input = QtWidgets.QTextBrowser()
+        self.input.setObjectName("input")
+        self.input_output.addWidget(self.input)
+        self.output = QtWidgets.QTextBrowser()
+        self.output.setObjectName("output")
+        self.input_output.addWidget(self.output)
+        self.main_layout.addLayout(self.input_output)
+        self.verticalLayout.addLayout(self.main_layout)
+
+        self.parnet.setLayout(self.verticalLayout)
 
     def PopulateForm(self):
         # Create layout

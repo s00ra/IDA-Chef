@@ -7,9 +7,14 @@ add two options
 -------------------------------------------------------------------------------------- [23 / 5 / 2023]
 - how to get value from byte_name                                       [dn]
 -------------------------------------------------------------------------------------- [24 / 5 / 2023]
-how to divide your window
-    - make multiple windows on the top of the main windows
-      - if you get it create the three windows
-        - operations
-        - recipes
-        - input/output
+how to divide your window                                               [dn]
+    - make multiple windows on the top of the main windows              [dn]
+      - if you get it create the three windows                          [dn]
+        - operations                                                    [dn]
+        - recipes                                                       [dn]
+        - input/output                                                  [dn]
+-------------------------------------------------------------------------------------- [27 / 5 / 2023]
+enhance the design feature
+- add operations, recipes, input/output Labels
+- make the button move from "operations" to "recipes"
+- add a search bar
