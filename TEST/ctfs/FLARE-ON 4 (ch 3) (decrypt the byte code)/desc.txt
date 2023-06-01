@@ -1,0 +1,4 @@
+you need to brute-force the key which is a single character
+and you do decryption operation
+    (^ 0x79) + 0x22
+and you will have the (decrypted_bytecode) and we will cacluate the hash and compared with a VALUE 0xXXXX
