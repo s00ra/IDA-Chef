@@ -24,5 +24,6 @@
 
 - Drag & drop widgets with PyQt
     - https://www.pythonguis.com/faq/pyqt-drag-drop-widgets/
+    - https://zetcode.com/gui/pyqt5/dragdrop/
 - Creating searchable widget dashboards
     - https://www.pythonguis.com/tutorials/widget-search-bar/

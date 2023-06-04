@@ -25,13 +25,12 @@ import idaapi
 import idautils
 import ida_kernwin
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-
+# import the GUI stuff
 # import all crypto functions
     # Note that you can add your own <file.py> into "fun_crypto folder"
                                     # OR 
     # you can write your function into interactive python and add -> it will be added into <c.py> automatically or into a new file
-# from fun_crypto import *
+from fun_crypto import *
 
 ACTION_MENU  = ["idaChef:menu%d" % i for i in range(2)]
 set_as_var = {}
@@ -194,134 +193,10 @@ class ida_chef_window(idaapi.PluginForm):
     def OnCreate(self, form):
         # Get parent widget
         self.parnet = self.FormToPyQtWidget(form)
-        self.inject_ui_main_window()
+        self.lol()
 
-    def inject_ui_main_window(self):
-        _translate = QtCore.QCoreApplication.translate
-        
-        self.verticalLayout = QtWidgets.QVBoxLayout()
-        self.verticalLayout.setObjectName("verticalLayout")
-
-        self.main_layout = QtWidgets.QHBoxLayout()
-        self.main_layout.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
-        self.main_layout.setContentsMargins(0, -1, 0, -1)
-        self.main_layout.setObjectName("main_layout")
-
-        self.operations = QtWidgets.QScrollArea()
-        self.operations.setEnabled(True)
-        self.operations.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.operations.setAutoFillBackground(False)
-        self.operations.setWidgetResizable(True)
-        self.operations.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
-        self.operations.setObjectName("operations")
-
-        self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 341, 804))
-        self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
-        
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_2)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
-        
-        # define btns
-        for i, l in enumerate(list("a"*50)):
-            self.btn = QtWidgets.QPushButton(self.scrollAreaWidgetContents_2)
-
-            self.btn.setFlat(True)
-            self.btn.setStyleSheet(
-                "QPushButton"
-                "{"
-                    "color: #002B5B;"
-                    "background-color: #cce4ff;"
-                    "padding-left: auto;"
-                    "padding-right: 200px;"
-                    "padding-top: 20px;"
-                    "padding-bottom: 30px;"
-                    "border: 2px solid #cce4ff;"
-                    "border-radius: 1px;"
-                    "font-size: 25px;"
-                    "font-weight: bold;"
-                "}"
-            )
-
-            self.btn.setObjectName(l)
-            self.btn.setText(_translate("main_window", "btn_" + str(i)))
-            
-            self.verticalLayout_2.addWidget(self.btn)
-        
-        self.operations.setWidget(self.scrollAreaWidgetContents_2)
-        self.main_layout.addWidget(self.operations)
-        
-        self.recipe = QtWidgets.QScrollArea()
-        self.recipe.setWidgetResizable(True)
-        self.recipe.setObjectName("recipe")
-        
-        self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 359, 752))
-        self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
-        
-        self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
-        self.verticalLayout_3.setContentsMargins(0, 0, -1, -1)
-        self.verticalLayout_3.setObjectName("verticalLayout_3")
-        
-        self.recipe.setWidget(self.scrollAreaWidgetContents)
-        self.main_layout.addWidget(self.recipe)
-
-        self.input_output = QtWidgets.QVBoxLayout()
-        self.input_output.setContentsMargins(0, -1, 0, -1)
-        self.input_output.setObjectName("input_output")
-        self.input = QtWidgets.QTextBrowser()
-        self.input.setObjectName("input")
-        self.input_output.addWidget(self.input)
-        self.output = QtWidgets.QTextBrowser()
-        self.output.setObjectName("output")
-        self.input_output.addWidget(self.output)
-        self.main_layout.addLayout(self.input_output)
-        self.verticalLayout.addLayout(self.main_layout)
-
-        self.parnet.setLayout(self.verticalLayout)
-
-    def PopulateForm(self):
-        # Create layout
-        layout = QtWidgets.QVBoxLayout()
-
-        # create an empty list
-        self.list = QtWidgets.QListWidget()
-        self.list.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
-        self.list.currentItemChanged.connect(self.print_item)
-        
-        # item         
-        self.list.addItem("WE NEED A HERO")
-
-        # table 
-        self.table = QtWidgets.QTableWidget()
-        self.table.setRowCount(4)
-        self.table.setColumnCount(25)
-        self.table.setHorizontalHeaderLabels(["Rule File", "Rename", "Comment", "Pattern"])
-        self.table.setItem(0,0, QtWidgets.QTableWidgetItem("Cell (1,1)"))
-        self.table.setItem(0,1, QtWidgets.QTableWidgetItem("Cell (1,2)"))
-        self.table.setItem(1,0, QtWidgets.QTableWidgetItem("Cell (2,1)"))
-        self.table.setItem(1,1, QtWidgets.QTableWidgetItem("Cell (2,2)"))
-        self.table.setItem(2,0, QtWidgets.QTableWidgetItem("Cell (3,1)"))
-        
-        # create a button and connect it's "clicked" signal to our "add_item" slot
-        self.genbtn = QtWidgets.QPushButton("Generate Skelton From Current Function (Cursor)")
-        self.genbtn.clicked.connect(self.add_item)
-        self.addbtn = QtWidgets.QPushButton("Add Rule From Selected Attributes")
-        self.addbtn.clicked.connect(self.add_item)
-        layout.addWidget(self.table)
-        layout.addWidget(self.genbtn)
-        layout.addWidget(self.list)
-        layout.addWidget(self.addbtn)
-        layout.addWidget(self.list)
-
-        # make our created layout the dialogs layout
-        self.parent.setLayout(layout)
-
-    def add_item(self):
-        self.list.addItem("BRRRRRRRR")
-        
-    def print_item(self):
-        print(self.list.currentItem().text())
+    def lol(self):
+        GUI.ui_setup_windows(self)
 
     def OnClose(self, form):
         pass
