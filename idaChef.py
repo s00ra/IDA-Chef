@@ -33,7 +33,10 @@ import ida_kernwin
 from fun_crypto import *
 
 ACTION_MENU  = ["idaChef:menu%d" % i for i in range(2)]
+
+# if user want to define his own variable
 set_as_var = {}
+GUI.get_set_as_var(set_as_var)
 
 #------------------------------------------------------------------------------
 # Plugin Hooks
@@ -87,6 +90,7 @@ class menu_action_handler_t(idaapi.action_handler_t):
                 if ok == 1:
                     set_as_var[v.var_name.value] = v.copy_bytes()
                     print(set_as_var)
+                    GUI.get_set_as_var(set_as_var)
                 v.Free()
         return 1
 
