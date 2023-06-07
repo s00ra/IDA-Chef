@@ -52,37 +52,23 @@ class Button(QPushButton):
         e.accept()
 
     def dropEvent(self, e):
-        desired_function = ""
-        file_path = os.path.join(dir_path, f"{self.title}.py")
-        # Import the module
-        spec = importlib.util.spec_from_file_location(self.title, file_path)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        # Get all the functions in the module
-        functions = inspect.getmembers(module, inspect.isfunction)
-        for function_name, function_obj in functions:
-            parameters = inspect.signature(function_obj).parameters
-            f = 0
-            for param_name, param_obj in parameters.items():
-                if param_name == "inp":
-                    desired_function = function_name
-                    f = 1
-                    break
-            if f:
-                break
-        function = getattr(module, desired_function)
-        
-        output_val = function(self_val.input.toPlainText())
-        self_val.output.clear()
-        self_val.output.appendPlainText(str(output_val))
+        function = load_function(self.title)
+        # if we find the function that it must contain a parameter <inp>
+        if function:
+            # send an bytes hex value b'6c6f6c'
+            output_val = function(self_val.output.toPlainText().encode())
+            self_val.output.clear()
+            self_val.output.appendPlainText(output_val.decode())
 
-        self.gridLayout = QtWidgets.QGridLayout()
-        self.gridLayout.addWidget(QPushButton('1'),0,0)
-        self.attr.addLayout(self.gridLayout)
+            self.gridLayout = QtWidgets.QGridLayout()
+            self.gridLayout.addWidget(QPushButton('1'),0,0)
+            self.attr.addLayout(self.gridLayout)
 
-        grid_recipe_arr.append(self.gridLayout)
+            grid_recipe_arr.append(self.gridLayout)
 
-        e.accept()
+            e.accept()
+        else:
+            print("Your function must contain parameter called <inp> refer to your input")
 
 def ui_setup_windows(self):
     global self_val, encryption_functions
@@ -110,6 +96,7 @@ def ui_setup_windows(self):
     
     # refresh_btn
     self.Refresh = QtWidgets.QPushButton()
+    self.Refresh.setToolTip("Refresh to load your file.py <that you saved in the fun_crypto folder> in the operations menu")
     self.Refresh.setFlat(True)
     self.Refresh.setIcon(QtGui.QIcon(os.path.join(pngs_folder, "refresh.png")))
     self.Refresh.setIconSize(QtCore.QSize(24,24))
@@ -120,17 +107,18 @@ def ui_setup_windows(self):
     # recipe_text
     self.Recipe = QtWidgets.QLabel()
     self.Recipe.setObjectName("Recipe")
-    
+
     self.names_action_btn_H.addWidget(self.Recipe, 2)
-    
+
     # delete_btn
     self.recipe_del = QtWidgets.QPushButton()
+    self.recipe_del.setToolTip("Clear recipe")
     self.recipe_del.setFlat(True)
     self.recipe_del.setIcon(QtGui.QIcon(os.path.join(pngs_folder, "delete.png")))
     self.recipe_del.setIconSize(QtCore.QSize(24,24))
     self.recipe_del.setObjectName("recipe_del")
     
-    self.names_action_btn_H.addWidget(self.recipe_del, 2)
+    self.names_action_btn_H.addWidget(self.recipe_del, 1)
     
     # input_text (input)
     self.Input = QtWidgets.QLabel()
@@ -151,6 +139,7 @@ def ui_setup_windows(self):
     
     # open_folder_btn (input)
     self.open_file_input = QtWidgets.QPushButton()
+    self.open_file_input.setToolTip("Open file as input")
     self.open_file_input.setFlat(True)
     self.open_file_input.setIcon(QtGui.QIcon(os.path.join(pngs_folder, "folder.png")))
     self.open_file_input.setIconSize(QtCore.QSize(24,24))
@@ -160,6 +149,7 @@ def ui_setup_windows(self):
     
     # delete_btn (input)
     self.input_del = QtWidgets.QPushButton()
+    self.input_del.setToolTip("Clear input and output")
     self.input_del.setFlat(True)
     self.input_del.setIcon(QtGui.QIcon(os.path.join(pngs_folder, "delete.png")))
     self.input_del.setIconSize(QtCore.QSize(24,24))
@@ -365,13 +355,13 @@ def export_data_values(data_name):
     data_addr = idc.get_name_ea_simple(data_name)
     if data_addr == idc.BADADDR:
         if data_name in set_as_var:
-            return set_as_var[data_name]
+            return int(set_as_var[data_name], 16)[2:]
         else:
-            return data_name
+            return data_name.encode().hex()
 
     data_size = idc.next_head(data_addr) - data_addr - 1
     data_val = idc.get_bytes(data_addr, data_size)
-    return data_val
+    return data_val.hex()
 
 # process the text in the input box and set the text of the output
     # for example if the user enter byte_xxxx it will pass the value of byte_xxxx
@@ -383,15 +373,14 @@ def process_the_input():
     input_arr = re.split(r'\s*,\s*', input_string) # split ","
     for c in input_arr: # check if it contains '+'
         if "+" in c:
-            val = re.split(r'\s*\+\s*', c)
-            final_res.append( [export_data_values(j) for j in val] )
+            val = c.split("+")
+            final_res.append( "".join([export_data_values(j) for j in val]) )
         else:
             final_res.append(export_data_values(c))
 
-    print(final_res)
-    bytes_ida_val = export_data_values(input_string)
     self_val.output.clear()
-    self_val.output.appendPlainText(str(bytes_ida_val))
+    for i in final_res:
+        self_val.output.appendPlainText(i)
 
 # if the user add a new file in fun_crypto folder
     # he must click refresh btn to load the new file added
@@ -450,6 +439,10 @@ def delete_all_recipe():
     for i in grid_recipe_arr:
         for j in reversed(range(i.count())): 
             i.itemAt(j).widget().deleteLater()
+    
+    # if all the recipe deleted make the output like the input
+    self_val.output.clear()
+    self_val.output.appendPlainText(self_val.input.toPlainText())
 
 # open a file to do operations
 def open_file_input():
@@ -466,6 +459,7 @@ def open_file_input():
 def delete_input_lable():
     global self_val
     self_val.input.clear()
+    self_val.output.clear()
 
 # copy the value in the output to clipboard
 def copy_output_val():
@@ -486,3 +480,23 @@ def save_output_file():
         text = self_val.output.toPlainText()
         f.write(text.encode())
         f.close()
+
+# load functions
+    # give it a string <name of the file> and it will load it and return a function to you
+def load_function(func_name):
+    desired_function = ""
+    file_path = os.path.join(dir_path, f"{func_name}.py")
+    # Import the module
+    spec = importlib.util.spec_from_file_location(func_name, file_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    # Get all the functions in the module
+    functions = inspect.getmembers(module, inspect.isfunction)
+    for function_name, function_obj in functions:
+        parameters = inspect.signature(function_obj).parameters
+        for param_name, param_obj in parameters.items():
+            if param_name == "inp":
+                desired_function = function_name
+                return getattr(module, desired_function)
+    return None
+
